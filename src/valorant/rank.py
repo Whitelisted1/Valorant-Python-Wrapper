@@ -9,6 +9,13 @@ class Rank:
         self.rank_rating = rank_rating
 
     def to_string(self) -> str:
+        """
+        Converts the Rank object into a string
+
+        Returns:
+        str: The string representation of the Rank class
+        """
+
         return f"{self.ranks_list[self.rank_index]} {self.rank_rating} RR"
 
     def __str__(self):
