@@ -1,10 +1,10 @@
-from typing import List
+from typing import List, Optional
 
 
 class Rank:
     ranks_list: List[str] = []
 
-    def __init__(self, rank_index: int, rank_rating: int):
+    def __init__(self, rank_index: int, rank_rating: Optional[int] = None):
         self.rank_index = rank_index
         self.rank_rating = rank_rating
 
@@ -16,7 +16,7 @@ class Rank:
         str: The string representation of the Rank class
         """
 
-        return f"{self.ranks_list[self.rank_index]} {self.rank_rating} RR"
+        return self.ranks_list[self.rank_index] if self.rank_rating is None else f"{self.ranks_list[self.rank_index]} {self.rank_rating} RR"
 
     def __str__(self):
         return self.to_string()

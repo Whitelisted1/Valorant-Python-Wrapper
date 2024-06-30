@@ -3,12 +3,12 @@ import requests
 import os
 import re
 
-from authorization import AuthorizationHandler
-from cacheManager import CacheManager
-from user.localAccount import LocalAccount
-from chat.conversationsManager import ConversationsManager
-from store.storeManager import StoreManager
-from social.socialManager import SocialManager
+from .authorization import AuthorizationHandler
+from .cacheManager import CacheManager
+from .user.localAccount import LocalAccount
+from .chat.conversationsManager import ConversationsManager
+from .store.storeManager import StoreManager
+from .social.socialManager import SocialManager
 
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

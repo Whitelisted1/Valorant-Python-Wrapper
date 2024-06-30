@@ -3,7 +3,7 @@ import requests
 
 
 if TYPE_CHECKING:
-    from session import Session
+    from ..session import Session
 
 
 class StoreManager:

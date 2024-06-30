@@ -3,13 +3,13 @@ from typing import TYPE_CHECKING
 from .match import Match
 
 if TYPE_CHECKING:
-    from session import Session
+    from ..session import Session
 
 
 class Pregame(Match):
     @staticmethod
     def from_json(session: "Session", data: dict) -> "Pregame":
-        from user.player import Player, Players
+        from ..user.player import Player, Players
 
         players = Players(session)
         team = data["AllyTeam"]["TeamID"]
@@ -25,5 +25,7 @@ class Pregame(Match):
                 hide_account_level=player["PlayerIdentity"]["HideAccountLevel"],
                 incognito=player["PlayerIdentity"]["Incognito"]
             ))
+
+        players.get_names()
 
         return Pregame(session, data["ID"], mapID=data["MapID"], modeID=data["Mode"], players=players)

@@ -5,10 +5,10 @@ import requests
 import base64
 import json
 
-import utilities
+from . import utilities
 
 if TYPE_CHECKING:
-    from session import Session
+    from .session import Session
 
 
 class AuthorizationHandler:

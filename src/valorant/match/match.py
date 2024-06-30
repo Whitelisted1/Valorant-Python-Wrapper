@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from session import Session
-    from user.player import Players
+    from ..session import Session
+    from ..user.player import Players
 
 
 class Match:
@@ -16,7 +16,7 @@ class Match:
 
     @staticmethod
     def from_json(session: "Session", data: dict) -> "Match":
-        from user.player import Player, Players
+        from ..user.player import Player, Players
 
         players = Players(session)
         for player in data["Players"]:
@@ -29,5 +29,7 @@ class Match:
                 hide_account_level=player["PlayerIdentity"]["HideAccountLevel"],
                 incognito=player["PlayerIdentity"]["Incognito"]
             ))
+
+        players.get_names()
 
         return Match(session, data["MatchID"], mapID=data["MapID"], modeID=data["ModeID"], players=players)

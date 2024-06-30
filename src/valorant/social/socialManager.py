@@ -6,8 +6,10 @@ import xml.etree.ElementTree as ET
 
 from .xmlParser import XMLParser
 
+from .updateTypes.presenceUpdate import PresenceUpdate
+
 if TYPE_CHECKING:
-    from session import Session
+    from ..session import Session
 
 
 class Listener:
@@ -33,6 +35,10 @@ class SocialManager:
         self.xml_parser: XMLParser = XMLParser()
 
         self.tls_socket: ssl.SSLSocket = None
+
+        self.tag_to_class = {
+            "presence": PresenceUpdate
+        }
 
     def send_message(self, content: str) -> None:
         """
@@ -144,6 +150,9 @@ class SocialManager:
 
         # ...
 
+    def convert_tag_to_class(self, tag_name: str):
+        return self.tag_to_class[tag_name] if tag_name in self.tag_to_class else None
+
     def send_event(self, output: str):
         for xml in output:
             data = ET.fromstring(xml)
@@ -151,8 +160,16 @@ class SocialManager:
             for listener in self.listeners:
                 tag = data.tag.split('}')[1] if '}' in data.tag else data.tag
 
+                tag_class = self.convert_tag_to_class(tag)
+
+                if tag_class is None and listener.message_type is not None:
+                    continue
+
                 if listener.message_type is not None and tag.lower() != listener.message_type.lower():
                     continue
+
+                if tag_class is not None:
+                    data = tag_class(data)
 
                 listener.callback(data)
 

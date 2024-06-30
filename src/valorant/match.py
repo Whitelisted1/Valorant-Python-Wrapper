@@ -2,7 +2,7 @@ from typing import List, TYPE_CHECKING, Union, Generator, Optional
 import requests
 
 if TYPE_CHECKING:
-    from authorization import AuthorizationHandler
+    from .authorization import AuthorizationHandler
 
 
 class Match:

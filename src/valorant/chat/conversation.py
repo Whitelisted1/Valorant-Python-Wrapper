@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from session import Session
+    from ..session import Session
 
 
 class Conversation:

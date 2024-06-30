@@ -3,10 +3,10 @@ import requests
 
 from .user import User
 from .users import Users
-from rank import Rank
+from ..rank import Rank
 
 if TYPE_CHECKING:
-    from session import Session
+    from ..session import Session
 
 
 class Players(Users):

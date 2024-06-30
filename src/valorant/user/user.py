@@ -1,34 +1,34 @@
 from typing import List, TYPE_CHECKING, Union, Generator, Optional
 import requests
 
-from rank import Rank
+from ..rank import Rank
 
 if TYPE_CHECKING:
-    from session import Session
-    from match.match import Match
-    from match.pregame import Pregame
+    from ..session import Session
+    from ..match.match import Match
+    from ..match.pregame import Pregame
 
 
 class User:
     def __init__(self, session: "Session", puuid: str, game_name=None, game_tag=None, incognito: bool = False, rank: Rank = None, peak_rank: Rank = None, account_level: int = 0, hide_account_level: bool = False, shard="na", region="na"):
-        self.puuid = puuid
-        self.session = session
+        self.puuid: str = puuid
+        self.session: "Session" = session
 
-        self.pd_url = f"https://pd.{shard}.a.pvp.net"
-        self.glz_url = f"https://glz-{shard}-1.{region}.a.pvp.net"
+        self.pd_url: str = f"https://pd.{shard}.a.pvp.net"
+        self.glz_url: str = f"https://glz-{shard}-1.{region}.a.pvp.net"
 
-        self.shard = shard
-        self.region = region
+        self.shard: Optional[str] = shard
+        self.region: Optional[str] = region
 
-        self.game_name = game_name
-        self.game_tag = game_tag
-        self.incognito = incognito
+        self.game_name: Optional[str] = game_name
+        self.game_tag: Optional[str] = game_tag
+        self.incognito: bool = incognito
 
-        self.rank = rank
-        self.peak_rank = peak_rank
+        self.rank: Optional[Rank] = rank
+        self.peak_rank: Optional[Rank] = peak_rank
 
-        self.account_level = account_level
-        self.hide_account_level = hide_account_level
+        self.account_level: int = account_level
+        self.hide_account_level: bool = hide_account_level
 
     def get_name(self) -> str:
         if not (self.game_name is None or self.game_tag is None):
@@ -119,7 +119,7 @@ class User:
     def get_current_game_raw(self) -> Optional[dict]:
         content = self.session.fetch(f"{self.glz_url}/core-game/v1/players/{self.puuid}")
 
-        if content["httpStatus"] == 404:
+        if "httpStatus" in content and content["httpStatus"] == 404:
             return None
 
         matchID = content["MatchID"]
@@ -131,13 +131,13 @@ class User:
         if current_game is None:
             return None
 
-        from match.match import Match
+        from ..match.match import Match
         return Match.from_json(self.session, current_game)
 
     def get_current_pregame_raw(self) -> Optional[dict]:
         content = self.session.fetch(f"{self.glz_url}/pregame/v1/players/{self.puuid}", use_cache=False)
 
-        if content["httpStatus"] == 404:
+        if "httpStatus" in content and content["httpStatus"] == 404:
             return None
 
         matchID = content["MatchID"]
@@ -149,5 +149,5 @@ class User:
         if current_game is None:
             return None
 
-        from match.pregame import Pregame
+        from ..match.pregame import Pregame
         return Pregame.from_json(self.session, current_game)

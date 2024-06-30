@@ -4,7 +4,7 @@ import requests
 from .conversations import Conversations
 
 if TYPE_CHECKING:
-    from session import Session
+    from ..session import Session
 
 
 class ConversationsManager:

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List
 from .conversation import Conversation
 
 if TYPE_CHECKING:
-    from session import Session
+    from ..session import Session
 
 
 class Conversations:

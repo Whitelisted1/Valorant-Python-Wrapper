@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any, Dict, Optional
 from time import time
 
 if TYPE_CHECKING:
-    from session import Session
+    from .session import Session
 
 
 class CacheData:
