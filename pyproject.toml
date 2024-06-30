@@ -1,0 +1,18 @@
+[project]
+name = "valorant-wrapper"
+version = "0.0.1"
+authors = [
+  { name="Whitelisted" },
+]
+description = "A Python wrapper which is capable of fetching information relating to Valorant utilizing local authorization"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/Whitelisted1/Valorant-Python-Wrapper"
+Issues = "https://github.com/Whitelisted1/Valorant-Python-Wrapper/issues"
