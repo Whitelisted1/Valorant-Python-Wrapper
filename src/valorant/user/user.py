@@ -55,7 +55,7 @@ class User:
             self.rank = rank
             return rank
 
-        season_data: list = self.session.get_seasons_acts_events()["Seasons"]
+        season_data: list = self.session.get_seasons_acts_events_raw()["Seasons"]
         season_data.reverse()
 
         for season in season_data:

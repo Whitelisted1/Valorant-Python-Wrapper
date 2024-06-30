@@ -83,7 +83,7 @@ class Session:
         if not (include_acts or include_episodes):
             raise RuntimeError("Both include_acts and include_episodes are false. One must be true.")
 
-        data = self.get_seasons_acts_events()
+        data = self.get_seasons_acts_events_raw()
 
         season_data = data["Seasons"]
 
@@ -128,7 +128,7 @@ class Session:
         self.local_account = LocalAccount(self)
         return self.local_account
 
-    def get_seasons_acts_events(self):
+    def get_seasons_acts_events_raw(self):
         if self.shard is None:
             self.get_region()
 

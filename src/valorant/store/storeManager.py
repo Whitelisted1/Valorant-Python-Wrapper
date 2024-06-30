@@ -10,7 +10,7 @@ class StoreManager:
     def __init__(self, session: "Session"):
         self.session = session
 
-    def get_storefront(self) -> dict:
+    def get_storefront_raw(self) -> dict:
         if self.session.shard is None:
             self.session.get_region()
 
@@ -18,7 +18,7 @@ class StoreManager:
 
         return r.json()
 
-    def get_all_item_prices(self):
+    def get_all_item_prices_raw(self):
         if self.session.shard is None:
             self.session.get_region()
 
@@ -26,7 +26,7 @@ class StoreManager:
 
         return r.json()
 
-    def get_wallet(self):
+    def get_wallet_raw(self):
         if self.session.shard is None:
             self.session.get_region()
 

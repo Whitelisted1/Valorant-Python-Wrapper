@@ -16,7 +16,7 @@ class Match:
         self.shard = shard
         self.region = region
 
-    def get_match_data(self):
+    def get_match_data_raw(self):
         # https://pd.{shard}.a.pvp.net/match-details/v1/matches/{matchID}
         r = requests.get(f"{self.pd_url}/match-details/v1/matches/{self.matchID}", headers=self.auth.auth_headers)
 

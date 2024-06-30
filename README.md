@@ -3,7 +3,6 @@
 * https://github.com/zayKenyon/VALORANT-rank-yoinker as a reference
 
 # TODO
-* Properly name functions that return raw json data
 * Implement use_cache parameter for functions that use session fetch method
 
 

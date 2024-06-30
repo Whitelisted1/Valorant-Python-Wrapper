@@ -16,10 +16,8 @@ class Conversation:
     def send_message(self, content):
         pass
 
-    def get_history(self):
-        d = self.session.fetch_local(f"chat/v6/messages?cid={self.conversationID}")
-
-        print(d)
+    def get_history_raw(self):
+        return self.session.fetch_local(f"chat/v6/messages?cid={self.conversationID}")
 
     @staticmethod
     def from_json(session: "Session", data: dict) -> "Conversation":
