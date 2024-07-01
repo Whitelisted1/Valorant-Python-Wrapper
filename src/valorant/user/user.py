@@ -34,9 +34,7 @@ class User:
         if not (self.game_name is None or self.game_tag is None):
             return self.game_name + "#" + self.game_tag
 
-        r = requests.put(f"{self.pd_url}/name-service/v2/players", headers=self.session.auth.auth_headers, json=[self.puuid])
-
-        content = r.json()[0]
+        content = self.session.fetch(f"{self.pd_url}/name-service/v2/players", method="PUT", json=[self.puuid])[0]
 
         self.game_name = content["GameName"]
         self.game_tag = content["TagLine"]
