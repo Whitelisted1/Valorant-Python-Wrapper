@@ -5,6 +5,14 @@ class Rank:
     ranks_list: List[str] = []
 
     def __init__(self, rank_index: int, rank_rating: Optional[int] = None):
+        """
+        Represents a competitive rank
+
+        Parameters:
+        rank_index (int): The rank index of the Rank
+        rank_rating (int, optional): The RR of the Rank
+        """
+
         self.rank_index = rank_index
         self.rank_rating = rank_rating
 

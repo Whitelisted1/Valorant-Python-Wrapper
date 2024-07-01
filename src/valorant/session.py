@@ -16,6 +16,10 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class Session:
     def __init__(self):
+        """
+        Session Manager for Valorant
+        """
+
         self.auth = AuthorizationHandler(self)
         self.store = StoreManager(self)
         self.conversations = ConversationsManager(self)
