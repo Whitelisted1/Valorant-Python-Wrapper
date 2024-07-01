@@ -157,19 +157,21 @@ class SocialManager:
         for xml in output:
             data = ET.fromstring(xml)
 
-            for listener in self.listeners:
-                tag = data.tag.split('}')[1] if '}' in data.tag else data.tag
+            tag = data.tag.split('}')[1] if '}' in data.tag else data.tag
+            tag_class = self.convert_tag_to_class(tag)
 
-                tag_class = self.convert_tag_to_class(tag)
+            if tag_class is not None:
+                data = tag_class(self.session, data)
 
-                if tag_class is None and listener.message_type is not None:
+                if data.invalid:
                     continue
+
+            for listener in self.listeners:
+                # if tag_class is None and listener.message_type is not None:
+                #     continue
 
                 if listener.message_type is not None and tag.lower() != listener.message_type.lower():
                     continue
-
-                if tag_class is not None:
-                    data = tag_class(data)
 
                 listener.callback(data)
 
