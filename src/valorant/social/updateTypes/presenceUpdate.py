@@ -13,6 +13,8 @@ if TYPE_CHECKING:
 
 class PresenceUpdate:
     def __init__(self, session: "Session", XML_data: ET.Element):
+        self.raw = XML_data
+
         self.invalid = False
 
         self.presence_data = XML_data.find('.//p')
