@@ -54,7 +54,7 @@ class Session:
 
         # grab the item from the cache if it exists
         if use_cache:
-            response = self.cache.get_from_cache(f"{method}_local/{path}")
+            response = self.cache.get_from_cache(f"{method}_local/{path}-{args}-{kwargs}")
 
             if response is not None:
                 return response
@@ -63,7 +63,7 @@ class Session:
         r = requests.request(method, f"{self.auth.lockfile_contents['protocol']}://127.0.0.1:{self.auth.lockfile_contents['port']}/{path}", headers=self.auth.local_auth_headers, verify=False, *args, **kwargs)
 
         # add the data to the cache
-        self.cache.add_to_cache(f"{method}_local/{path}", r.json(), set_cache_time_seconds)
+        self.cache.add_to_cache(f"{method}_local/{path}-{args}-{kwargs}", r.json(), set_cache_time_seconds)
 
         # return the JSON data
         return r.json()
@@ -88,7 +88,7 @@ class Session:
 
         # grab the item from the cache if it exists
         if use_cache:
-            response = self.cache.get_from_cache(f"{method}_{url}")
+            response = self.cache.get_from_cache(f"{method}_{url}-{args}-{kwargs}")
 
             if response is not None:
                 return response
@@ -97,7 +97,7 @@ class Session:
         r = requests.request(method, url, headers=self.auth.auth_headers, *args, **kwargs)
 
         # add the request's response to the cache
-        self.cache.add_to_cache(f"{method}_{url}", r.json(), set_cache_time_seconds)
+        self.cache.add_to_cache(f"{method}_{url}-{args}-{kwargs}", r.json(), set_cache_time_seconds)
 
         # return the request's JSON data
         return r.json()
