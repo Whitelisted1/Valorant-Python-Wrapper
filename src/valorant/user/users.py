@@ -4,7 +4,7 @@ import requests
 from .user import User
 
 if TYPE_CHECKING:
-    from .session import Session
+    from ..session import Session
 
 
 class Users:
