@@ -4,7 +4,10 @@
 
 # TODO
 * Implement use_cache parameter for functions that use session fetch method
-
+* Add docstrings to remaining functions
+* Convert to async?
+* Add inline comments
+* Add debug logging
 
 # Legal
 This project is not affiliated with Riot Games or any of its employees and therefore does not reflect the views of said parties.
