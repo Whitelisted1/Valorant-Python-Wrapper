@@ -2,6 +2,7 @@ from typing import List, TYPE_CHECKING, Optional
 import requests
 
 from .walletBalance import WalletBalance
+from .ownedItems import OwnedItems
 
 if TYPE_CHECKING:
     from ..session import Session
@@ -57,3 +58,6 @@ class StoreManager:
             raise RuntimeError(f"'{item_name.lower()}' is not a valid owned item name!\nSee: {self.item_name_to_ID}")
 
         return self.session.fetch(f"https://pd.{self.session.shard}.a.pvp.net/store/v1/entitlements/{self.session.get_local_account().puuid}/{item_type_ID}")
+
+    def get_owned_items(self, item_name: str) -> OwnedItems:
+        return OwnedItems.from_json(self.get_owned_items_raw(item_name))
