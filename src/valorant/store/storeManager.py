@@ -44,7 +44,7 @@ class StoreManager:
 
         return self.session.fetch(f"https://pd.{self.session.shard}.a.pvp.net/store/v1/wallet/{self.session.get_local_account().puuid}")
 
-    def get_wallet(self):
+    def get_wallet(self) -> WalletBalance:
         return WalletBalance.from_json(self.get_wallet_raw())
 
     def get_owned_items_raw(self, item_name: str) -> dict:

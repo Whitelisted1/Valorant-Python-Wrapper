@@ -6,7 +6,7 @@ class WalletBalance:
         self.free_agents = free_agents
 
     @staticmethod
-    def from_json(data: dict):
+    def from_json(data: dict) -> "WalletBalance":
         return WalletBalance(
             data["Balances"]["85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741"],
             data["Balances"]["85ca954a-41f2-ce94-9b45-8ca3dd39a00d"],

@@ -12,7 +12,7 @@
 * Create a past match class
 * Add more updateTypes for socialManager.py
 * Create chatting system
-* Shop/Wallet information
+* Shop information
 * Alternative auth methods?
 * Get player pings
 * Events (joining game, leaving game, etc)
