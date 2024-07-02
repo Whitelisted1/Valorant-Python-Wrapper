@@ -41,7 +41,7 @@ class XMLParser:
         # start_tag_length = xml_data.index(">")
         start_tag_length = len(start_tag)
 
-        # find the stoppping tag, if it exists
+        # find the stopping tag, if it exists
         stop_tag = xml_data.find(f"</{start_tag}")
 
         # if we couldn't find the stopping tag, we add the data to the buffer and cancel
@@ -73,9 +73,16 @@ class XMLParser:
         """
 
         for data in generator:
+            # the generator in socialManager.py has disconnected, so we break the loop
+            if data == "":
+                break
+
+            # parse the xml data
             parser_output = self.parse_xml(data)
 
+            # if no xml data was found we continue
             if len(parser_output) == 0:
                 continue
 
+            # call the callback with the parser output
             callback(parser_output)
