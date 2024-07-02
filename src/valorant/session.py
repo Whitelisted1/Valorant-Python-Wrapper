@@ -68,7 +68,7 @@ class Session:
         # return the JSON data
         return r.json()
 
-    def fetch(self, url: str, method: str = "GET", use_cache: bool = True, set_cache_time_seconds: Optional[int] = None, *args, **kwargs) -> dict:
+    def fetch(self, url: str, method: str = "GET", use_cache: bool = True, set_cache_time_seconds: Optional[int] = None, *args, **kwargs) -> Optional[dict]:
         """
         Fetches the given url using the given method
 
@@ -95,6 +95,9 @@ class Session:
 
         # send the request
         r = requests.request(method, url, headers=self.auth.auth_headers, *args, **kwargs)
+
+        if method.upper() == "POST":
+            return
 
         # add the request's response to the cache
         self.cache.add_to_cache(f"{method}_{url}-{args}-{kwargs}", r.json(), set_cache_time_seconds)
