@@ -8,6 +8,14 @@
 * Convert to async?
 * Add inline comments
 * Add debug logging
+* Implement party.py
+* Create a past match class
+* Add more updateTypes for socialManager.py
+* Create chatting system
+* Shop/Wallet information
+* Alternative auth methods?
+* Get player pings
+* Events (joining game, leaving game, etc)
 
 # Legal
 This project is not affiliated with Riot Games or any of its employees and therefore does not reflect the views of said parties.
