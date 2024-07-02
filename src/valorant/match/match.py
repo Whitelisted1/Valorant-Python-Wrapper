@@ -33,6 +33,12 @@ class Match:
 
         return self.session.fetch(f"{self.pd_url}/match-details/v1/matches/{self.matchID}")
 
+    def quit_match(self) -> None:
+        if self.session.shard is None:
+            self.session.get_region()
+
+        self.session.fetch(f"https://glz-{self.session.region}-1.{self.session.shard}.a.pvp.net/core-game/v1/players/{self.session.get_local_account().puuid}/disassociate/{self.matchID}", method="POST")
+
     @staticmethod
     def from_json(session: "Session", data: dict) -> "Match":
         from ..user.player import Player, Players

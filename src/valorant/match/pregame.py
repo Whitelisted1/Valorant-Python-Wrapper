@@ -7,6 +7,12 @@ if TYPE_CHECKING:
 
 
 class Pregame(Match):
+    def quit_match(self) -> None:
+        if self.session.shard is None:
+            self.session.get_region()
+
+        self.session.fetch(f"https://glz-{self.session.region}-1.{self.session.shard}.a.pvp.net/pregame/v1/matches/{self.matchID}/quit", method="POST")
+
     @staticmethod
     def from_json(session: "Session", data: dict) -> "Pregame":
         from ..user.player import Player, Players
