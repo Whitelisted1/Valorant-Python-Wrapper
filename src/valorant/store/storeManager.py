@@ -14,22 +14,16 @@ class StoreManager:
         if self.session.shard is None:
             self.session.get_region()
 
-        r = requests.get(f"https://pd.{self.session.shard}.a.pvp.net/store/v2/storefront/{self.session.get_local_account().puuid}", headers=self.session.auth.auth_headers)
+        return self.session.fetch(f"https://pd.{self.session.shard}.a.pvp.net/store/v2/storefront/{self.session.get_local_account().puuid}")
 
-        return r.json()
-
-    def get_all_item_prices_raw(self):
+    def get_all_item_prices_raw(self) -> dict:
         if self.session.shard is None:
             self.session.get_region()
 
-        r = requests.get(f"https://pd.{self.session.shard}.a.pvp.net/store/v1/offers/", headers=self.session.auth.auth_headers)
+        return self.session.fetch(f"https://pd.{self.session.shard}.a.pvp.net/store/v1/offers/")
 
-        return r.json()
-
-    def get_wallet_raw(self):
+    def get_wallet_raw(self) -> dict:
         if self.session.shard is None:
             self.session.get_region()
 
-        r = requests.get(f"https://pd.{self.session.shard}.a.pvp.net/store/v1/wallet/{self.session.get_local_account().puuid}", headers=self.session.auth.auth_headers)
-
-        return r.json()
+        return self.session.fetch(f"https://pd.{self.session.shard}.a.pvp.net/store/v1/wallet/{self.session.get_local_account().puuid}")
