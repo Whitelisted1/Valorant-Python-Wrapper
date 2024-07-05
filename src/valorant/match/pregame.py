@@ -11,7 +11,7 @@ class Pregame(Match):
         if self.session.shard is None:
             self.session.get_region()
 
-        self.session.fetch(f"https://glz-{self.session.region}-1.{self.session.shard}.a.pvp.net/pregame/v1/matches/{self.matchID}/quit", method="POST")
+        self.session.fetch(f"https://glz-{self.session.region}-1.{self.session.shard}.a.pvp.net/pregame/v1/matches/{self.match_ID}/quit", method="POST")
 
     @staticmethod
     def from_json(session: "Session", data: dict) -> "Pregame":
@@ -34,4 +34,4 @@ class Pregame(Match):
 
         players.get_names()
 
-        return Pregame(session, data["ID"], mapID=data["MapID"], modeID=data["Mode"], players=players)
+        return Pregame(session, data["ID"], map_ID=data["MapID"], mode_ID=data["Mode"], players=players)
