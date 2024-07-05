@@ -113,39 +113,3 @@ class User:
             # matches.append(Match.from_json(self.session, m))
 
         return matches
-
-    def get_current_game_raw(self) -> Optional[dict]:
-        content = self.session.fetch(f"{self.glz_url}/core-game/v1/players/{self.puuid}")
-
-        if "httpStatus" in content and content["httpStatus"] == 404:
-            return None
-
-        matchID = content["MatchID"]
-        return self.session.fetch(f"{self.glz_url}/core-game/v1/matches/{matchID}", use_cache=False)
-
-    def get_current_game(self) -> Optional["Match"]:
-        current_game = self.get_current_game_raw()
-
-        if current_game is None:
-            return None
-
-        from ..match.match import Match
-        return Match.from_json(self.session, current_game)
-
-    def get_current_pregame_raw(self) -> Optional[dict]:
-        content = self.session.fetch(f"{self.glz_url}/pregame/v1/players/{self.puuid}", use_cache=False)
-
-        if "httpStatus" in content and content["httpStatus"] == 404:
-            return None
-
-        matchID = content["MatchID"]
-        return self.session.fetch(f"{self.glz_url}/pregame/v1/matches/{matchID}", use_cache=False)
-
-    def get_current_pregame(self) -> "Pregame":
-        current_game = self.get_current_pregame_raw()
-
-        if current_game is None:
-            return None
-
-        from ..match.pregame import Pregame
-        return Pregame.from_json(self.session, current_game)
