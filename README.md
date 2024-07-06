@@ -16,6 +16,7 @@
 * Alternative auth methods?
 * Get player pings
 * Events (joining game, leaving game, etc)
+* Add nightmarket to storeFront.py (currently unsure how the data is formatted)
 
 # Legal
 This project is not affiliated with Riot Games or any of its employees and therefore does not reflect the views of said parties.
