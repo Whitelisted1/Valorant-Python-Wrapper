@@ -41,7 +41,7 @@ class AuthorizationHandler:
         if self.lockfile_contents is None:
             self.get_lockfile_contents()
 
-        data = self.session.fetch_local("entitlements/v1/token")
+        data = self.session.fetch_local("entitlements/v1/token", use_cache=False)
 
         self.auth_headers = {
             'Authorization': f"Bearer {data['accessToken']}",
@@ -79,26 +79,3 @@ class AuthorizationHandler:
         data = self.session.fetch_local("rso-auth/v1/authorization/userinfo")
 
         print(data)
-
-    """
-    def get_entitlement(self):
-        if self.auth_headers is None:
-            self.get_auth_headers()
-
-        # r = requests.post("https://entitlements.auth.riotgames.com/api/token/v1", headers={
-        #     # "Content-Type": "application/json"
-        #     "Authorization": f"Bearer {self.lockfile_contents[""]}"
-        # })
-
-        # print(self.auth_headers)
-
-        r = requests.post("https://entitlements.auth.riotgames.com/api/token/v1", headers=self.auth_headers)
-
-        print(r.request.headers)
-
-        f = open("out.html", "wb")
-        f.write(r.content)
-        f.close()
-
-        return r.content.decode()
-    """
