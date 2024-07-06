@@ -71,11 +71,3 @@ class AuthorizationHandler:
         self.pas_token = r.content.decode()
 
         return self.parsed_pas_token
-
-    def get_rso_data(self):
-        if self.local_auth_headers is None:
-            self.get_lockfile_contents()
-
-        data = self.session.fetch_local("rso-auth/v1/authorization/userinfo")
-
-        print(data)
