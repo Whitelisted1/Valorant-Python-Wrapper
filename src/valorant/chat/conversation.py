@@ -17,7 +17,7 @@ class Conversation:
         pass
 
     def get_history_raw(self):
-        return self.session.fetch_local(f"chat/v6/messages?cid={self.conversationID}")
+        return self.session.fetch_local(f"chat/v6/messages?cid={self.conversationID}", use_cache=False)
 
     @staticmethod
     def from_json(session: "Session", data: dict) -> "Conversation":

@@ -32,7 +32,7 @@ class LocalAccount(User):
         return self
 
     def get_friends(self) -> Friends:
-        data = self.session.fetch_local("chat/v4/friends")
+        data = self.session.fetch_local("chat/v4/friends", use_cache=False)
 
         friends = Friends(self.session, [])
         for friend in data["friends"]:
