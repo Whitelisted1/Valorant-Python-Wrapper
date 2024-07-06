@@ -61,12 +61,18 @@ class Session:
 
         # get the actual data
         r = requests.request(method, f"{self.auth.lockfile_contents['protocol']}://127.0.0.1:{self.auth.lockfile_contents['port']}/{path}", headers=self.auth.local_auth_headers, verify=False, *args, **kwargs)
+        data = r.json()
+
+        if "errorCode" in data and data["errorCode"] == "BAD_CLAIMS":
+            self.auth.lockfile_contents = None
+            self.auth.get_auth_headers()
+            return self.fetch_local(path, method, use_cache, set_cache_time_seconds, *args, **kwargs)
 
         # add the data to the cache
-        self.cache.add_to_cache(f"{method}_local/{path}-{args}-{kwargs}", r.json(), set_cache_time_seconds)
+        self.cache.add_to_cache(f"{method}_local/{path}-{args}-{kwargs}", data, set_cache_time_seconds)
 
         # return the JSON data
-        return r.json()
+        return data
 
     def fetch(self, url: str, method: str = "GET", use_cache: bool = True, set_cache_time_seconds: Optional[int] = None, *args, **kwargs) -> Optional[dict]:
         """
@@ -95,15 +101,21 @@ class Session:
 
         # send the request
         r = requests.request(method, url, headers=self.auth.auth_headers, *args, **kwargs)
+        data = r.json()
 
         if method.upper() == "POST":
             return
 
+        if "errorCode" in data and data["errorCode"] == "BAD_CLAIMS":
+            self.auth.lockfile_contents = None
+            self.auth.get_auth_headers()
+            return self.fetch(url, method, use_cache, set_cache_time_seconds, *args, **kwargs)
+
         # add the request's response to the cache
-        self.cache.add_to_cache(f"{method}_{url}-{args}-{kwargs}", r.json(), set_cache_time_seconds)
+        self.cache.add_to_cache(f"{method}_{url}-{args}-{kwargs}", data, set_cache_time_seconds)
 
         # return the request's JSON data
-        return r.json()
+        return data
 
     def get_game_version(self) -> str:
         """
@@ -210,7 +222,7 @@ class Session:
         Returns:
         dict: The JSON output
         """
-        
+
         # get the current region if we do not have the shard
         if self.shard is None:
             self.get_region()
