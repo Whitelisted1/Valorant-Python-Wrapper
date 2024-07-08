@@ -11,6 +11,15 @@ if TYPE_CHECKING:
 
 class Friends(Users):
     def __init__(self, session: "Session", *args, **kwargs):
+        """
+        Represents a group of friends. Extends the Users class
+
+        Parameters:
+        session (Session): The Session object
+        *args: additional arguments passed to the Users class init function
+        **kwargs: additional keyword arguments passed to the Users class init function
+        """
+
         super().__init__(session, *args, **kwargs)
 
         self.users: List[Friend]
@@ -20,8 +29,19 @@ class Friends(Users):
 
 
 class Friend(User):
-    def __init__(self, session: "Session", puuid: str, friend_note: str = None, **kwargs):
-        super().__init__(session, puuid, **kwargs)
+    def __init__(self, session: "Session", puuid: str, friend_note: Optional[str] = None, *args, **kwargs):
+        """
+        An object that represents an individual Friend
+
+        Parameters:
+        session (Session): The Session object
+        puuid (str): The uuid of the friend
+        friend_note (str, optional, defaults to None): The friend note of the friend
+        *args: additional arguments passed to the User init function
+        **kwargs: additional keyword arguments passed to the User init function
+        """
+
+        super().__init__(session, puuid, *args, **kwargs)
 
         self.friend_note = friend_note
 
