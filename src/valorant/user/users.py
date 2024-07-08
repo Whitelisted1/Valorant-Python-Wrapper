@@ -1,4 +1,4 @@
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Optional
 import requests
 
 from .user import User
@@ -8,7 +8,16 @@ if TYPE_CHECKING:
 
 
 class Users:
-    def __init__(self, session: "Session", users: List[User] = None, shard="na"):
+    def __init__(self, session: "Session", users: Optional[List[User]] = None, shard: str = "na"):
+        """
+        An object that contains multiple User objects
+
+        Parameters:
+        session (Session): The Session object
+        users (List[User], optional, defaults to None): A list of the current users
+        shard (str, defaults to "na"): The shard that the players are in
+        """
+
         if users is None: self.users = []
         else: self.users = users
 
@@ -18,6 +27,13 @@ class Users:
         self.pd_url = f"https://pd.{shard}.a.pvp.net"
 
     def get_names(self) -> List[str]:
+        """
+        Fetches the names of all the users in self.users
+
+        Returns:
+        List[str]: A list of strings representing the username and tagline of each player
+        """
+
         content = self.session.fetch(f"{self.pd_url}/name-service/v2/players", method="PUT", json=[u.puuid for u in self.users])
 
         for user, data in zip(self.users, content):

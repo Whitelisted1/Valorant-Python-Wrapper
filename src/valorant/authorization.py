@@ -13,6 +13,13 @@ if TYPE_CHECKING:
 
 class AuthorizationManager:
     def __init__(self, session: "Session"):
+        """
+        Manages getting authentication information from local endpoints and from the lockfile
+
+        Parameters:
+        session (Session): The Session object
+        """
+
         self.session = session
 
         self.lockfile_path = os.path.join(os.getenv('LOCALAPPDATA'), R'Riot Games\Riot Client\Config\lockfile')
@@ -25,6 +32,13 @@ class AuthorizationManager:
         self.pas_token = None
 
     def get_lockfile_contents(self) -> dict:
+        """
+        Gets the current lockfile contents
+
+        Returns:
+        dict: The lockfile contents as a dictionary
+        """
+
         f = open(self.lockfile_path, "r")
         content = f.read().split(":")
         f.close()
@@ -38,6 +52,13 @@ class AuthorizationManager:
         return self.lockfile_contents
 
     def get_auth_headers(self) -> dict:
+        """
+        Fetches the current authentication headers
+
+        Returns:
+        dict: The headers as a dictionary
+        """
+
         if self.lockfile_contents is None:
             self.get_lockfile_contents()
 
@@ -55,7 +76,14 @@ class AuthorizationManager:
 
         return self.auth_headers
 
-    def get_pas_data(self):
+    def get_pas_data(self) -> dict:
+        """
+        Fetches the PAS JWT
+
+        Returns:
+        dict: The parsed PAS token containing the header, payload and signature
+        """
+
         if self.pas_token is not None:
             return self.pas_token
 

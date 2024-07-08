@@ -9,15 +9,31 @@ if TYPE_CHECKING:
 
 
 class User:
-    def __init__(self, session: "Session", puuid: str, game_name=None, game_tag=None, incognito: bool = False, rank: Rank = None, peak_rank: Rank = None, account_level: int = 0, hide_account_level: bool = False, shard="na", region="na"):
+    def __init__(self, session: "Session", puuid: str, game_name: Optional[str] = None, game_tag: Optional[str] = None, incognito: bool = False, rank: Optional[Rank] = None, peak_rank: Optional[Rank] = None, account_level: int = 0, hide_account_level: bool = False, shard: str = "na", region: str = "na"):
+        """
+        An object that represents an individual User
+
+        session (Session): The Session object
+        puuid (str): The uuid of the user
+        game_name (str, optional, defaults to None): The game name of the user
+        game_tag (str, optional, defaults to None): The game tag of the user
+        incognito (bool, defaults to False): Represents if the current user is in incognito mode
+        rank (Rank, optional, defaults to None): The rank of the user
+        peak_rank (Rank, optional, defaults to None): The peak rank of the user
+        account_level (int, defaults to 0): The account level of the user
+        hide_account_level (bool, defaults to False): Represents if we should hide the account level of the user
+        shard (str, defaults to "na"): The shard of the user
+        region (str, defaults to "na"): The region of the user
+        """
+
         self.puuid: str = puuid
         self.session: "Session" = session
 
         self.pd_url: str = f"https://pd.{shard}.a.pvp.net"
         self.glz_url: str = f"https://glz-{shard}-1.{region}.a.pvp.net"
 
-        self.shard: Optional[str] = shard
-        self.region: Optional[str] = region
+        self.shard: str = shard
+        self.region: str = region
 
         self.game_name: Optional[str] = game_name
         self.game_tag: Optional[str] = game_tag
@@ -30,6 +46,13 @@ class User:
         self.hide_account_level: bool = hide_account_level
 
     def get_name(self) -> str:
+        """
+        Fetches the name of the user
+
+        Returns:
+        str: The display name of the player
+        """
+
         if not (self.game_name is None or self.game_tag is None):
             return self.game_name + "#" + self.game_tag
 
@@ -41,6 +64,13 @@ class User:
         return self.game_name + "#" + self.game_tag
 
     def get_rank(self) -> Rank:
+        """
+        Fetches the current rank of the user
+
+        Returns:
+        Rank: An object representing the rank of the user
+        """
+
         if self.rank is not None:
             return self.rank
 
@@ -67,6 +97,13 @@ class User:
         return rank
 
     def get_peak_rank(self) -> Rank:
+        """
+        Fetches the peak rank of the user
+
+        Returns:
+        Rank: An object representing the peak rank of the user
+        """
+
         if self.peak_rank is not None:
             return self.peak_rank
 
@@ -92,6 +129,13 @@ class User:
         return rank
 
     def get_ranked_data_raw(self) -> dict:
+        """
+        Fetches the raw ranked data for the user
+
+        Returns:
+        dict: A dictionary object containing the ranked data of the user
+        """
+
         return self.session.fetch(f"{self.pd_url}/mmr/v1/players/{self.puuid}")
 
     # TEMP
@@ -99,6 +143,17 @@ class User:
         return self.get_ranked_data_raw()
 
     def get_match_history_raw(self, start: int = 0, end: int = 20) -> dict:
+        """
+        Fetches the raw match history for the user given start and end indices
+
+        Parameters:
+        start (int, defaults to 0): The starting index of the match history
+        end (int, defaults to 20): The ending index of the match history
+
+        Returns:
+        dict: A dictionary object containing the match history of the user
+        """
+
         return self.session.fetch(f"{self.pd_url}/match-history/v1/history/{self.puuid}?startIndex={start}&endIndex={end}&queue=competitive")
 
     # TEMP
