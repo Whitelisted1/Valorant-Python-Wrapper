@@ -1,5 +1,15 @@
 class WalletBalance:
     def __init__(self, valorant_points: int, kingdom_credits: int, radianite_points: int, free_agents: int):
+        """
+        An object that contains the current balance of each credit type
+
+        Parameters:
+        valorant_points (int): The number of Valorant points the wallet contains
+        kingdom_credits (int): The number of Kingdom credits the wallet contains
+        radianite_points (int): The number of Radianite Points the wallet contains
+        free_agents (int): The number of free agents the wallet contains
+        """
+
         self.valorant_points = valorant_points
         self.kingdom_credits = kingdom_credits
         self.radianite_points = radianite_points
