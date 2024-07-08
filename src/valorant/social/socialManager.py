@@ -2,6 +2,7 @@ from typing import Callable, List, TYPE_CHECKING, Any, Optional, Generator
 import threading
 import socket
 import ssl
+import time
 import xml.etree.ElementTree as ET
 
 from .xmlParser import XMLParser
@@ -32,6 +33,7 @@ class SocialManager:
         self.listeners: List[Listener] = []
         self.is_listening: bool = False
         self.listening_thread: Optional[threading.Thread] = None
+        self.pinging_thread: Optional[threading.Thread] = None
         self.xml_parser: XMLParser = XMLParser()
 
         self.tls_socket: ssl.SSLSocket = None
@@ -90,6 +92,11 @@ class SocialManager:
 
         return ServerDetails(server, port, xmppRegion)
 
+    def send_ping_thread(self) -> None:
+        while True:
+            time.sleep(20)
+            self.send_message(" ")
+
     def send_auth_messages(self, server_details: ServerDetails, PAS_token: str, RSO_token: str, entitlement: str):
         auth_messages = [
             {"content": f'<?xml version="1.0" encoding="UTF-8"?><stream:stream to="{server_details.xmppRegion}.pvp.net" xml:lang="en" version="1.0" xmlns="jabber:client" xmlns:stream="http://etherx.jabber.org/streams">"', "receiveAfter": 2},
@@ -130,6 +137,9 @@ class SocialManager:
 
         self.send_message("<presence/>")
         self.send_message('<iq type="get" id="2"><query xmlns="jabber:iq:riotgames:roster" last_state="true" /></iq>')
+
+        self.pinging_thread = threading.Thread(target=self.send_ping_thread, daemon=True)
+        self.pinging_thread.start()
 
         self.xml_parser.parse_stream(self.receive_messages_generator(), self.send_event)
 
