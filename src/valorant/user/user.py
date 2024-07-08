@@ -6,7 +6,6 @@ from ..rank import Rank
 if TYPE_CHECKING:
     from ..session import Session
     from ..match.match import Match
-    from ..match.pregame import Pregame
 
 
 class User:
