@@ -3,7 +3,7 @@ import requests
 import os
 import re
 
-from .authorization import AuthorizationHandler
+from .authorization import AuthorizationManager
 from .cacheManager import CacheManager
 from .user.localAccount import LocalAccount
 from .chat.conversationsManager import ConversationsManager
@@ -20,7 +20,7 @@ class Session:
         Session Manager for Valorant
         """
 
-        self.auth = AuthorizationHandler(self)
+        self.auth = AuthorizationManager(self)
         self.store = StoreManager(self)
         self.conversations = ConversationsManager(self)
         self.social = SocialManager(self)

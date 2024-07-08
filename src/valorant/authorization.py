@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from .session import Session
 
 
-class AuthorizationHandler:
+class AuthorizationManager:
     def __init__(self, session: "Session"):
         self.session = session
 
