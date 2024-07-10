@@ -76,7 +76,7 @@ class AuthorizationManager:
 
         return self.auth_headers
 
-    def get_pas_data(self) -> dict:
+    def get_pas_token(self) -> dict:
         """
         Fetches the PAS JWT
 
@@ -85,7 +85,7 @@ class AuthorizationManager:
         """
 
         if self.pas_token is not None:
-            return self.pas_token
+            return self.parsed_pas_token
 
         r = requests.get("https://riot-geo.pas.si.riotgames.com/pas/v1/service/chat", headers=self.auth_headers)
 
@@ -95,7 +95,7 @@ class AuthorizationManager:
         PAYLOAD = json.loads(utilities.base64_url_decode(JWT_TOKEN[1]).decode("utf-8"))
         SIGNATURE = JWT_TOKEN[2]
 
-        self.parsed_pas_token = {"header": HEADER, "payload": PAYLOAD, "signature": SIGNATURE}
+        self.parsed_pas_token = {"header": HEADER, "payload": PAYLOAD, "signature": SIGNATURE, "expires": PAYLOAD['exp']}
         self.pas_token = r.content.decode()
 
         return self.parsed_pas_token
