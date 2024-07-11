@@ -1,4 +1,4 @@
-from typing import Generator, Callable, Any
+from typing import Generator, Callable, Any, AsyncGenerator
 import re
 
 
@@ -63,16 +63,16 @@ class XMLParser:
         # put the first xml data in front of the other xml data
         return [newest_xml] + search_output
 
-    def parse_stream(self, generator: Generator[str, None, None], callback: Callable[[str], Any]) -> None:
+    async def parse_stream(self, generator: AsyncGenerator[str, None], callback: Callable[[str], Any]) -> None:
         """
-        Parses the XML data from the Generator object and calls the callback when an XML object is found
+        Parses the XML data from the AsyncGenerator object and calls the callback when an XML object is found
 
         Parameters:
-        generator (Generator[str, None, None]): The generator object. Expected to yield string output.
+        generator (AsyncGenerator[str, None]): The AsyncGenerator object. Expected to yield string output.
         callback (Callable[[str], Any]): The callback object. Is called with the parser output as a string.
         """
 
-        for data in generator:
+        async for data in generator:
             # the generator in socialManager.py has disconnected, so we break the loop
             if data == "":
                 break
