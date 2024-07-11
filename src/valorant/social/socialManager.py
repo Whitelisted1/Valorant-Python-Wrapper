@@ -38,8 +38,8 @@ class SocialManager:
         self.listening_thread_flag = threading.Event()
         self.exit_flag = asyncio.Event()
 
-        self.ping_task = None
-        self.get_messages_task = None
+        self.ping_task: Optional[asyncio.Task] = None
+        self.get_messages_task: Optional[asyncio.Task] = None
 
         self.xml_parser: XMLParser = XMLParser()
 
