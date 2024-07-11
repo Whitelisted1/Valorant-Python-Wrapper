@@ -51,13 +51,19 @@ class AuthorizationManager:
 
         return self.lockfile_contents
 
-    def get_auth_headers(self) -> dict:
+    def get_auth_headers(self, force_renew: bool = False) -> dict:
         """
         Fetches the current authentication headers
+
+        Parameters:
+        force_renew (bool, defaults to False): If True it forces the renewal of new authentication headers
 
         Returns:
         dict: The headers as a dictionary
         """
+
+        if self.auth_headers is not None and not force_renew:
+            return self.auth_headers
 
         if self.lockfile_contents is None:
             self.get_lockfile_contents()
@@ -76,18 +82,21 @@ class AuthorizationManager:
 
         return self.auth_headers
 
-    def get_pas_token(self) -> dict:
+    def get_pas_token(self, force_renew: bool = False) -> dict:
         """
         Fetches the PAS JWT
+
+        Parameters:
+        force_renew (bool, defaults to False): If True it forces the renewal of new authentication headers
 
         Returns:
         dict: The parsed PAS token containing the header, payload and signature
         """
 
-        if self.pas_token is not None:
+        if self.pas_token is not None and not force_renew:
             return self.parsed_pas_token
 
-        r = requests.get("https://riot-geo.pas.si.riotgames.com/pas/v1/service/chat", headers=self.auth_headers)
+        r = requests.get("https://riot-geo.pas.si.riotgames.com/pas/v1/service/chat", headers=self.get_auth_headers())
 
         JWT_TOKEN = r.content.decode().split(".")
 

@@ -65,7 +65,7 @@ class Session:
 
         if "errorCode" in data and data["errorCode"] == "BAD_CLAIMS":
             self.auth.lockfile_contents = None
-            self.auth.get_auth_headers()
+            self.auth.get_auth_headers(force_renew=True)
             return self.fetch_local(path, method, use_cache, set_cache_time_seconds, *args, **kwargs)
 
         # add the data to the cache
@@ -88,10 +88,6 @@ class Session:
         dict: The JSON response from the url
         """
 
-        # get the auth headers if they have not been gotten yet
-        if self.auth.auth_headers is None:
-            self.auth.get_auth_headers()
-
         # grab the item from the cache if it exists
         if use_cache:
             response = self.cache.get_from_cache(f"{method}_{url}-{args}-{kwargs}")
@@ -100,7 +96,7 @@ class Session:
                 return response
 
         # send the request
-        r = requests.request(method, url, headers=self.auth.auth_headers, *args, **kwargs)
+        r = requests.request(method, url, headers=self.auth.get_auth_headers(), *args, **kwargs)
         data = r.json()
 
         if method.upper() == "POST":
@@ -108,7 +104,7 @@ class Session:
 
         if "errorCode" in data and data["errorCode"] == "BAD_CLAIMS":
             self.auth.lockfile_contents = None
-            self.auth.get_auth_headers()
+            self.auth.get_auth_headers(force_renew=True)
             return self.fetch(url, method, use_cache, set_cache_time_seconds, *args, **kwargs)
 
         # add the request's response to the cache
@@ -202,10 +198,6 @@ class Session:
         Returns:
         LocalAccount: The LocalAccount object
         """
-
-        # get the auth headers if we have not already gotten them
-        if self.auth.auth_headers is None:
-            self.auth.get_auth_headers()
 
         # return the self.local_account variable if it is already defined
         if self.local_account is not None:
