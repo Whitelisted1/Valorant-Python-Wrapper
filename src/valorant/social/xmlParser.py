@@ -7,6 +7,16 @@ class XMLParser:
         self.buffer = ""
 
     def custom_checks(self, xml_data: str) -> bool:
+        """
+        Does custom checks in the case that we need to force xml data to act as parsed
+
+        Parameters:
+        xml_data (str): The XML data to do the checks on
+
+        Returns:
+        bool: Did the custom checks pass?
+        """
+
         return xml_data.startswith("<?xml") or xml_data.startswith("<stream:features>") or xml_data.startswith("<message")
 
     def parse_xml(self, xml_data: str) -> list:

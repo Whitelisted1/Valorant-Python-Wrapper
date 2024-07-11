@@ -29,6 +29,13 @@ class ServerDetails:
 
 class SocialManager:
     def __init__(self, session: "Session"):
+        """
+        Helps to manage the XML data that that comes from the presence/social XMPP connection
+
+        Parameters:
+        session (Session): The Session object
+        """
+
         self.session: "Session" = session
 
         self.listeners: List[Listener] = []
@@ -99,7 +106,11 @@ class SocialManager:
 
         return ServerDetails(server, port, xmppRegion)
 
-    async def send_ping(self) -> None:
+    async def send_ping(self):
+        """
+        Sends a ping to the server every 20 seconds
+        """
+
         while True:
             try:
                 await asyncio.sleep(20)
@@ -107,7 +118,31 @@ class SocialManager:
             except asyncio.CancelledError:
                 break
 
+    async def receive_messages(self):
+        """
+        Begins the process of receiving messages from the server
+        """
+
+        async def gen():
+            while True:
+                try:
+                    yield await self.receive_message()
+                except asyncio.CancelledError:
+                    break
+
+        await self.xml_parser.parse_stream(gen(), self.send_event)
+
     async def send_auth_messages(self, server_details: ServerDetails, PAS_token: str, RSO_token: str, entitlement: str):
+        """
+        Sends authentication messages via the XMPP connection
+
+        Parameters:
+        server_details (ServerDetails): The server details
+        PAS_token (str): The PAS token to do authentication with
+        RSO_token (str): The RSO token to do authentication with
+        entitlement (str): The entitlement token to do authentication with
+        """
+
         auth_messages = [
             {"content": f'<?xml version="1.0" encoding="UTF-8"?><stream:stream to="{server_details.xmppRegion}.pvp.net" xml:lang="en" version="1.0" xmlns="jabber:client" xmlns:stream="http://etherx.jabber.org/streams">"', "receiveAfter": 2},
             {"content": f'<auth mechanism="X-Riot-RSO-PAS" xmlns="urn:ietf:params:xml:ns:xmpp-sasl"><rso_token>{RSO_token}</rso_token><pas_token>{PAS_token}</pas_token></auth>', "receiveAfter": 1},
@@ -123,17 +158,11 @@ class SocialManager:
             for _ in range(message["receiveAfter"]):
                 await self.receive_message()
 
-    async def receive_messages(self):
-        async def gen():
-            while True:
-                try:
-                    yield await self.receive_message()
-                except asyncio.CancelledError:
-                    break
-
-        await self.xml_parser.parse_stream(gen(), self.send_event)
-
     async def _start_listening(self):
+        """
+        Internal method to connect to the XMPP server
+        """
+
         self.exit_flag.clear()
 
         # Create a regular socket and wrap it with TLS
@@ -149,44 +178,58 @@ class SocialManager:
         RSO_token = self.session.auth.get_auth_headers()['Authorization'][len("Bearer "):]
         entitlement = self.session.auth.get_auth_headers()["X-Riot-Entitlements-JWT"]
 
+        # actually connect to the server
         self.tls_socket.connect((server_details.server, server_details.port))
 
+        # send auth messages
         await self.send_auth_messages(server_details, PAS_token, RSO_token, entitlement)
 
+        # get presence updates and request a list of friends
         await self.send_message("<presence/>")
         await self.send_message('<iq type="get" id="2"><query xmlns="jabber:iq:riotgames:roster" last_state="true" /></iq>')
 
+        # init the pinging task and receive_messages task
         self.ping_task = asyncio.create_task(self.send_ping())
         self.get_messages_task = asyncio.create_task(self.receive_messages())
 
+        # allow for the main thread to continue
         self.listening_thread_flag.set()
 
+        # wait until the exit flag is set
         await self.exit_flag.wait()
 
     def start_listening(self):
+        """
+        Connect to the presence and social XMPP server and begin calling callbacks from self.add_callback
+        """
+
         if self.is_listening:
             return
 
         self.is_listening = True
+        self.listening_thread_flag.clear()
 
         def run_listening_thread():
-            self.listening_thread_flag.clear()
-
             loop = asyncio.new_event_loop()
             loop.run_until_complete(self._start_listening())
             loop.close()
 
+        # start the listening thread
         self.listening_thread = threading.Thread(target=run_listening_thread, daemon=True)
         self.listening_thread.start()
 
+        # wait for the listening thread to allow us to continue
         self.listening_thread_flag.wait()
 
     def stop_listening(self):
+        """
+        Disconnect from the XMPP server and stop calling callbacks
+        """
+
         if not self.is_listening:
             return
 
         self.is_listening = False
-
         self.exit_flag.set()
 
         self.get_messages_task.cancel()
@@ -202,8 +245,15 @@ class SocialManager:
     def convert_tag_to_class(self, tag_name: str):
         return self.tag_to_class[tag_name] if tag_name in self.tag_to_class else None
 
-    def send_event(self, output: str):
-        for xml in output:
+    def send_event(self, event_data: str):
+        """
+        Sends an event to the callbacks added from self.add_callback
+
+        Parameters:
+        event_data (str): The data that will be sent to the callbacks
+        """
+
+        for xml in event_data:
             data = ET.fromstring(xml)
 
             tag = data.tag.split('}')[1] if '}' in data.tag else data.tag
@@ -222,11 +272,27 @@ class SocialManager:
                 listener.callback(data)
 
     def add_callback(self, callback: Callable[[ET.Element], Any], message_type: Optional[str] = None):
+        """
+        Add a callback to be called when an XMPP message is received
+
+        Parameters:
+        callback (Callable[[ET.Element], Any]): The callback to be called
+        message_type (str, optional): The tag that the XML data from the XMPP server has to be in order for this callback to be called (see self.tag_to_class). If None, the callback will be called for every received message
+        """
+
         self.listeners.append(Listener(callback, message_type))
 
-    # Throw a custom error in the future
-    def remove_callback(self, callback):
+    def remove_callback(self, callback: Callable[[ET.Element], Any]):
+        """
+        Removes the given callback as a listener
+
+        Parameters:
+        callback (Callable[[ET.Element], Any]): The callback to remove from self.listeners
+        """
+
         for listener in self.listeners:
             if listener.callback is callback:
                 self.listeners.remove(listener)
-                break
+                return
+
+        raise ValueError("Callback not in listeners")
