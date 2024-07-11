@@ -34,6 +34,10 @@ class Match:
         return self.session.fetch(f"{self.pd_url}/match-details/v1/matches/{self.match_ID}")
 
     def quit_match(self) -> None:
+        """
+        Quits the current match
+        """
+
         if self.session.shard is None:
             self.session.get_region()
 

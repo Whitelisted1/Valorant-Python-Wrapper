@@ -8,6 +8,10 @@ if TYPE_CHECKING:
 
 class Pregame(Match):
     def quit_match(self) -> None:
+        """
+        Quits the current pregame
+        """
+
         if self.session.shard is None:
             self.session.get_region()
 

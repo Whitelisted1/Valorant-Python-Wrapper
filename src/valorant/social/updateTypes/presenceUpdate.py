@@ -13,6 +13,14 @@ if TYPE_CHECKING:
 
 class PresenceUpdate:
     def __init__(self, session: "Session", XML_data: ET.Element):
+        """
+        An object that represents a presence update
+
+        Parameters:
+        session (Session): The Session object
+        XML_data (ET.Element): The XML data from the XMPP server
+        """
+
         self.raw = XML_data
 
         self.from_user = User(session, XML_data.attrib['from'].split("@")[0])
@@ -47,3 +55,7 @@ class PresenceUpdate:
         self.map = self.presence_data["matchMap"]
 
         self.partyID = self.presence_data["partyId"]
+
+        if self.currentState == "INGAME" and self.team == "":
+            self.invalid = True
+            return
