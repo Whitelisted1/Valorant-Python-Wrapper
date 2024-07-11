@@ -46,7 +46,3 @@ rank_names = [
 for r in rank_names:
     for i in range(r["count"]):
         Rank.ranks_list.append(r['name'] + (f" {i+1}" if r["displayNumbers"] else ""))
-
-
-if __name__ == "__main__":
-    print(Rank.ranks_list)
