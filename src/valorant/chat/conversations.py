@@ -7,13 +7,13 @@ if TYPE_CHECKING:
 
 
 class Conversations:
-    def __init__(self, session: "Session", conversations: List["Conversation"] = None):
+    def __init__(self, session: "Session", conversations: List[Conversation] = None):
         self.session = session
 
         if conversations is None:
-            self.conversations = []
+            self.conversations: List[Conversation] = []
         else:
-            self.conversations = conversations
+            self.conversations: List[Conversation] = conversations
 
     def __iter__(self):
         return iter(self.conversations)

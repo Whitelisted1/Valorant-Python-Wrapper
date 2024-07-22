@@ -12,4 +12,4 @@ class ConversationsManager:
         self.session = session
 
     def get_conversations(self):
-        return Conversations.from_json(self, self.get_local_url("chat/v6/conversations")["conversations"])
+        return Conversations.from_json(self.session, self.session.fetch_local("chat/v6/conversations")["conversations"])
