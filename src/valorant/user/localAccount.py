@@ -122,3 +122,13 @@ class LocalAccount(User):
 
         from ..match.pregame import Pregame
         return Pregame.from_json(self.session, current_game)
+
+    def get_penalties(self) -> Optional[dict]:
+        """
+        Fetches the local user's matchmaking penalties. These are in an unknown format
+
+        Returns:
+        Optional[dict]: The matchmaking penalties
+        """
+
+        return self.session.fetch(f"{self.pd_url}/restrictions/v3/penalties", use_cache=False)["Penalties"]
