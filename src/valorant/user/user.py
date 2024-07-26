@@ -2,6 +2,8 @@ from typing import List, TYPE_CHECKING, Union, Generator, Optional
 import requests
 
 from ..rank import Rank
+from ..competitiveUpdate import CompetitiveUpdate
+
 
 if TYPE_CHECKING:
     from ..session import Session
@@ -75,27 +77,9 @@ class User:
         if self.rank is not None:
             return self.rank
 
-        data = self.get_ranked_data()
-        rank = Rank(data["LatestCompetitiveUpdate"]["TierAfterUpdate"], data["LatestCompetitiveUpdate"]["RankedRatingAfterUpdate"])
-        previous_ranked_seasons: dict = data["QueueSkills"]["competitive"]["SeasonalInfoBySeasonID"]
+        data = self.get_competitive_updates_raw(end=1)
 
-        if rank.rank_index != 0 or previous_ranked_seasons is None:
-            self.rank = rank
-            return rank
-
-        season_data: list = self.session.get_seasons_acts_events_raw()["Seasons"]
-        season_data.reverse()
-
-        for season in season_data:
-            if season["ID"] not in previous_ranked_seasons:
-                continue
-
-            rank = Rank(previous_ranked_seasons[season["ID"]]["Rank"], previous_ranked_seasons[season["ID"]]["RankedRating"])
-            self.rank = rank
-            return rank
-
-        self.rank = rank
-        return rank
+        return Rank(data["Matches"][0]["TierAfterUpdate"], data["Matches"][0]["RankedRatingAfterUpdate"])
 
     def get_peak_rank(self) -> Rank:
         """
@@ -143,6 +127,40 @@ class User:
     def get_ranked_data(self):
         return self.get_ranked_data_raw()
 
+    def get_competitive_updates_raw(self, start: int = 0, end: int = 20) -> dict:
+        """
+        Fetches the raw competitive updates for the user given start and end indices
+
+        Parameters:
+        start (int, defaults to 0): The starting index of the competitive updates
+        end (int, defaults to 20): The ending index of the competitive updates
+
+        Returns:
+        dict: A dictionary object containing the competitive updates of the user
+        """
+
+        return self.session.fetch(f"https://pd.{self.shard}.a.pvp.net/mmr/v1/players/{self.puuid}/competitiveupdates?startIndex={start}&endIndex={end}&queue=competitive")
+
+    def get_competitive_updates(self, start: int = 0, end: int = 20) -> List[CompetitiveUpdate]:
+        """
+        Fetches the competitive updates for the user given start and end indices
+
+        Parameters:
+        start (int, defaults to 0): The starting index of the competitive updates
+        end (int, defaults to 20): The ending index of the competitive updates
+
+        Returns:
+        List[CompetitiveUpdate]: A list of competitive updates
+        """
+
+        competitive_updates_raw = self.get_competitive_updates_raw(start=start, end=end)
+
+        competitive_updates = []
+        for match in competitive_updates_raw["Matches"]:
+            competitive_updates.append(CompetitiveUpdate.from_json(match))
+
+        return competitive_updates
+
     def get_match_history_raw(self, start: int = 0, end: int = 20, queue_ID: Optional[str] = None) -> dict:
         """
         Fetches the raw match history for the user given start and end indices and the queue type
@@ -170,10 +188,10 @@ class User:
         queue_ID (str, optional): The queue ID to get the history for (ex. "competitive")
 
         Returns:
-        List["PreviousMatch"]: A list of the previous matches
+        List[PreviousMatch]: A list of the previous matches
         """
 
-        matches_raw = self.get_match_history_raw(start, end, queue_ID=queue_ID)
+        matches_raw = self.get_match_history_raw(start=start, end=end, queue_ID=queue_ID)
 
         from ..match.previousMatch import PreviousMatch
         matches = []
