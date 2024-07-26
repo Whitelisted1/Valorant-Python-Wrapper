@@ -16,3 +16,6 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/Whitelisted1/Valorant-Python-Wrapper"
 Issues = "https://github.com/Whitelisted1/Valorant-Python-Wrapper/issues"
+
+[project.dependencies]
+requests = "^2.32.3"
