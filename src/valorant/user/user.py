@@ -6,6 +6,7 @@ from ..rank import Rank
 if TYPE_CHECKING:
     from ..session import Session
     from ..match.match import Match
+    from ..match.previousMatch import PreviousMatch
 
 
 class User:
@@ -142,7 +143,7 @@ class User:
     def get_ranked_data(self):
         return self.get_ranked_data_raw()
 
-    def get_match_history_raw(self, start: int = 0, end: int = 20) -> dict:
+    def get_match_history_raw(self, start: int = 0, end: int = 20, queue_ID: Optional[str] = None) -> dict:
         """
         Fetches the raw match history for the user given start and end indices
 
@@ -154,16 +155,16 @@ class User:
         dict: A dictionary object containing the match history of the user
         """
 
-        return self.session.fetch(f"{self.pd_url}/match-history/v1/history/{self.puuid}?startIndex={start}&endIndex={end}&queue=competitive")
+        queue_url_parameter = f"&queue={queue_ID}" if queue_ID is not None else ""
 
-    # TEMP
-    def get_match_history(self, start: int = 0, end: int = 20) -> List["Match"]:
-        return self.get_match_history_raw(start, end)
+        return self.session.fetch(f"{self.pd_url}/match-history/v1/history/{self.puuid}?startIndex={start}&endIndex={end}{queue_url_parameter}")
 
-        # from match.match import Match
+    def get_match_history(self, start: int = 0, end: int = 20, queue_ID: Optional[str] = None) -> List["PreviousMatch"]:
+        matches_raw = self.get_match_history_raw(start, end, queue_ID=queue_ID)
+
+        from ..match.previousMatch import PreviousMatch
         matches = []
-        for m in r.json()["History"]:
-            matches.append(Match(self.session, m["MatchID"], m["QueueID"], self.session.auth, gameStartTime=m["GameStartTime"]))
-            # matches.append(Match.from_json(self.session, m))
+        for m in matches_raw["History"]:
+            matches.append(PreviousMatch(self.session, m["MatchID"], m["QueueID"], game_start_time=m["GameStartTime"]))
 
         return matches

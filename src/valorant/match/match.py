@@ -1,13 +1,14 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 import requests
+
+from ..user.player import Players
 
 if TYPE_CHECKING:
     from ..session import Session
-    from ..user.player import Players
 
 
 class Match:
-    def __init__(self, session: "Session", match_ID: str, map_ID: str = None, mode_ID: str = None, players: "Players" = None, shard: str = "na", region: str = "na",):
+    def __init__(self, session: "Session", match_ID: str, map_ID: Optional[str] = None, mode_ID: Optional[str] = None, players: Optional["Players"] = None, shard: str = "na", region: str = "na"):
         self.session = session
 
         self.match_ID = match_ID
@@ -22,16 +23,6 @@ class Match:
 
         if players is None: self.players = Players(session)
         else: self.players: Players = players
-
-    def get_match_data_raw(self) -> dict:
-        """
-        Fetches match data for this object
-
-        Returns:
-        dict: The JSON data which represents this Match's data
-        """
-
-        return self.session.fetch(f"{self.pd_url}/match-details/v1/matches/{self.match_ID}")
 
     def quit_match(self) -> None:
         """
