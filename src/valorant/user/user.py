@@ -66,9 +66,12 @@ class User:
 
         return self.game_name + "#" + self.game_tag
 
-    def get_rank(self) -> Rank:
+    def get_rank(self, use_cache: bool = False) -> Rank:
         """
         Fetches the current rank of the user
+
+        Parameters:
+        use_cache (bool, defaults to False): Should the request use the cache if available?
 
         Returns:
         Rank: An object representing the rank of the user
@@ -77,7 +80,7 @@ class User:
         if self.rank is not None:
             return self.rank
 
-        data = self.get_competitive_updates_raw(end=1)
+        data = self.get_competitive_updates_raw(end=1, use_cache=use_cache)
 
         return Rank(data["Matches"][0]["TierAfterUpdate"], data["Matches"][0]["RankedRatingAfterUpdate"])
 
@@ -127,33 +130,35 @@ class User:
     def get_ranked_data(self):
         return self.get_ranked_data_raw()
 
-    def get_competitive_updates_raw(self, start: int = 0, end: int = 20) -> dict:
+    def get_competitive_updates_raw(self, start: int = 0, end: int = 20, use_cache: bool = False) -> dict:
         """
         Fetches the raw competitive updates for the user given start and end indices
 
         Parameters:
         start (int, defaults to 0): The starting index of the competitive updates
         end (int, defaults to 20): The ending index of the competitive updates
+        use_cache (bool, defaults to False): Should the request use the cache if available?
 
         Returns:
         dict: A dictionary object containing the competitive updates of the user
         """
 
-        return self.session.fetch(f"https://pd.{self.shard}.a.pvp.net/mmr/v1/players/{self.puuid}/competitiveupdates?startIndex={start}&endIndex={end}&queue=competitive")
+        return self.session.fetch(f"https://pd.{self.shard}.a.pvp.net/mmr/v1/players/{self.puuid}/competitiveupdates?startIndex={start}&endIndex={end}&queue=competitive", use_cache=use_cache)
 
-    def get_competitive_updates(self, start: int = 0, end: int = 20) -> List[CompetitiveUpdate]:
+    def get_competitive_updates(self, start: int = 0, end: int = 20, use_cache: bool = False) -> List[CompetitiveUpdate]:
         """
         Fetches the competitive updates for the user given start and end indices
 
         Parameters:
         start (int, defaults to 0): The starting index of the competitive updates
         end (int, defaults to 20): The ending index of the competitive updates
+        use_cache (bool, defaults to False): Should the request use the cache if available?
 
         Returns:
         List[CompetitiveUpdate]: A list of competitive updates
         """
 
-        competitive_updates_raw = self.get_competitive_updates_raw(start=start, end=end)
+        competitive_updates_raw = self.get_competitive_updates_raw(start=start, end=end, use_cache=use_cache)
 
         competitive_updates = []
         for match in competitive_updates_raw["Matches"]:
@@ -161,7 +166,7 @@ class User:
 
         return competitive_updates
 
-    def get_match_history_raw(self, start: int = 0, end: int = 20, queue_ID: Optional[str] = None) -> dict:
+    def get_match_history_raw(self, start: int = 0, end: int = 20, queue_ID: Optional[str] = None, use_cache: bool = False) -> dict:
         """
         Fetches the raw match history for the user given start and end indices and the queue type
 
@@ -169,6 +174,7 @@ class User:
         start (int, defaults to 0): The starting index of the match history
         end (int, defaults to 20): The ending index of the match history
         queue_ID (str, optional): The queue ID to get the history for (ex. "competitive")
+        use_cache (bool, defaults to False): Should the request use the cache if available?
 
         Returns:
         dict: A dictionary object containing the match history of the user
@@ -176,9 +182,9 @@ class User:
 
         queue_url_parameter = f"&queue={queue_ID}" if queue_ID is not None else ""
 
-        return self.session.fetch(f"{self.pd_url}/match-history/v1/history/{self.puuid}?startIndex={start}&endIndex={end}{queue_url_parameter}")
+        return self.session.fetch(f"{self.pd_url}/match-history/v1/history/{self.puuid}?startIndex={start}&endIndex={end}{queue_url_parameter}", use_cache=use_cache)
 
-    def get_match_history(self, start: int = 0, end: int = 20, queue_ID: Optional[str] = None) -> List["PreviousMatch"]:
+    def get_match_history(self, start: int = 0, end: int = 20, queue_ID: Optional[str] = None, use_cache: bool = False) -> List["PreviousMatch"]:
         """
         Fetches the match history for the user given start and end indices and the queue type
 
@@ -186,12 +192,13 @@ class User:
         start (int, defaults to 0): The starting index of the match history
         end (int, defaults to 20): The ending index of the match history
         queue_ID (str, optional): The queue ID to get the history for (ex. "competitive")
+        use_cache (bool, defaults to False): Should the request use the cache if available?
 
         Returns:
         List[PreviousMatch]: A list of the previous matches
         """
 
-        matches_raw = self.get_match_history_raw(start=start, end=end, queue_ID=queue_ID)
+        matches_raw = self.get_match_history_raw(start=start, end=end, queue_ID=queue_ID, use_cache=use_cache)
 
         from ..match.previousMatch import PreviousMatch
         matches = []
