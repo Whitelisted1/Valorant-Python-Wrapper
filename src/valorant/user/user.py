@@ -145,11 +145,12 @@ class User:
 
     def get_match_history_raw(self, start: int = 0, end: int = 20, queue_ID: Optional[str] = None) -> dict:
         """
-        Fetches the raw match history for the user given start and end indices
+        Fetches the raw match history for the user given start and end indices and the queue type
 
         Parameters:
         start (int, defaults to 0): The starting index of the match history
         end (int, defaults to 20): The ending index of the match history
+        queue_ID (str, optional): The queue ID to get the history for (ex. "competitive")
 
         Returns:
         dict: A dictionary object containing the match history of the user
@@ -160,6 +161,18 @@ class User:
         return self.session.fetch(f"{self.pd_url}/match-history/v1/history/{self.puuid}?startIndex={start}&endIndex={end}{queue_url_parameter}")
 
     def get_match_history(self, start: int = 0, end: int = 20, queue_ID: Optional[str] = None) -> List["PreviousMatch"]:
+        """
+        Fetches the match history for the user given start and end indices and the queue type
+
+        Parameters:
+        start (int, defaults to 0): The starting index of the match history
+        end (int, defaults to 20): The ending index of the match history
+        queue_ID (str, optional): The queue ID to get the history for (ex. "competitive")
+
+        Returns:
+        List["PreviousMatch"]: A list of the previous matches
+        """
+
         matches_raw = self.get_match_history_raw(start, end, queue_ID=queue_ID)
 
         from ..match.previousMatch import PreviousMatch
