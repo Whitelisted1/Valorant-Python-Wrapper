@@ -42,20 +42,20 @@ class PresenceUpdate:
 
         self.is_idle = self.presence_data["isIdle"]
 
-        self.queueID = self.presence_data["queueId"]
-        self.currentState = self.presence_data["sessionLoopState"]
+        self.queue_ID = self.presence_data["queueId"]
+        self.current_state = self.presence_data["sessionLoopState"]
 
-        self.partySize = self.presence_data["partySize"]
-        self.maxPartySize = self.presence_data["maxPartySize"]
+        self.party_size = self.presence_data["partySize"]
+        self.max_party_size = self.presence_data["maxPartySize"]
 
-        self.allyTeamScore = self.presence_data["partyOwnerMatchScoreAllyTeam"]
-        self.enemyTeamScore = self.presence_data["partyOwnerMatchScoreEnemyTeam"]
+        self.ally_team_score = self.presence_data["partyOwnerMatchScoreAllyTeam"]
+        self.enemy_team_score = self.presence_data["partyOwnerMatchScoreEnemyTeam"]
 
         self.team = self.presence_data["partyOwnerMatchCurrentTeam"]
         self.map = self.presence_data["matchMap"]
 
-        self.partyID = self.presence_data["partyId"]
+        self.party_ID = self.presence_data["partyId"]
 
-        if self.currentState == "INGAME" and self.team == "":
+        if self.current_state == "INGAME" and self.team == "":
             self.invalid = True
             return
