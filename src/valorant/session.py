@@ -30,14 +30,13 @@ class Session:
         self.region = None
         self.local_account = None
 
+        self.valorant_logging_file = os.path.join(os.getenv('LOCALAPPDATA'), R'VALORANT\Saved\Logs\ShooterGame.log')
+
         self.get_region()
+        self.auth.get_auth_headers()
 
         self.pd_url = f"https://pd.{self.shard}.a.pvp.net"
         self.glz_url = f"https://glz-{self.shard}-1.{self.region}.a.pvp.net"
-
-        self.valorant_logging_file = os.path.join(os.getenv('LOCALAPPDATA'), R'VALORANT\Saved\Logs\ShooterGame.log')
-
-        self.auth.get_auth_headers()
 
     def fetch_local(self, path: str, method: str = "GET", use_cache: bool = True, set_cache_time_seconds: Optional[int] = None, *args, **kwargs) -> dict:
         """
