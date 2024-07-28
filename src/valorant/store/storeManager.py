@@ -31,7 +31,7 @@ class StoreManager:
         if self.session.shard is None:
             self.session.get_region()
 
-        return self.session.fetch(f"https://pd.{self.session.shard}.a.pvp.net/store/v2/storefront/{self.session.get_local_account().puuid}")
+        return self.session.fetch(f"{self.session.pd_url}/{self.session.get_local_account().puuid}")
 
     def get_storefront(self) -> StoreFront:
         """
@@ -54,7 +54,7 @@ class StoreManager:
         if self.session.shard is None:
             self.session.get_region()
 
-        return self.session.fetch(f"https://pd.{self.session.shard}.a.pvp.net/store/v1/offers/")
+        return self.session.fetch(f"{self.session.pd_url}/store/v1/offers/")
 
     def get_wallet_raw(self) -> dict:
         """
@@ -67,7 +67,7 @@ class StoreManager:
         if self.session.shard is None:
             self.session.get_region()
 
-        return self.session.fetch(f"https://pd.{self.session.shard}.a.pvp.net/store/v1/wallet/{self.session.get_local_account().puuid}")
+        return self.session.fetch(f"{self.session.pd_url}/store/v1/wallet/{self.session.get_local_account().puuid}")
 
     def get_wallet(self) -> WalletBalance:
         """
@@ -90,7 +90,7 @@ class StoreManager:
         if self.session.shard is None:
             self.session.get_region()
 
-        return self.session.fetch(f"https://pd.{self.session.shard}.a.pvp.net/store/v1/entitlements/{self.session.get_local_account().puuid}/{item_ID}")
+        return self.session.fetch(f"{self.session.pd_url}/store/v1/entitlements/{self.session.get_local_account().puuid}/{item_ID}")
 
     def get_owned_items(self, item_name: str) -> OwnedItems:
         """

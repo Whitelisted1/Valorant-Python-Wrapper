@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class User:
-    def __init__(self, session: "Session", puuid: str, game_name: Optional[str] = None, game_tag: Optional[str] = None, incognito: bool = False, rank: Optional[Rank] = None, peak_rank: Optional[Rank] = None, account_level: int = 0, hide_account_level: bool = False, shard: str = "na", region: str = "na"):
+    def __init__(self, session: "Session", puuid: str, game_name: Optional[str] = None, game_tag: Optional[str] = None, incognito: bool = False, rank: Optional[Rank] = None, peak_rank: Optional[Rank] = None, account_level: int = 0, hide_account_level: bool = False):
         """
         An object that represents an individual User
 
@@ -25,18 +25,10 @@ class User:
         peak_rank (Rank, optional, defaults to None): The peak rank of the user
         account_level (int, defaults to 0): The account level of the user
         hide_account_level (bool, defaults to False): Represents if we should hide the account level of the user
-        shard (str, defaults to "na"): The shard of the user
-        region (str, defaults to "na"): The region of the user
         """
 
         self.puuid: str = puuid
         self.session: "Session" = session
-
-        self.pd_url: str = f"https://pd.{shard}.a.pvp.net"
-        self.glz_url: str = f"https://glz-{shard}-1.{region}.a.pvp.net"
-
-        self.shard: str = shard
-        self.region: str = region
 
         self.game_name: Optional[str] = game_name
         self.game_tag: Optional[str] = game_tag
@@ -59,7 +51,7 @@ class User:
         if not (self.game_name is None or self.game_tag is None):
             return self.game_name + "#" + self.game_tag
 
-        content = self.session.fetch(f"{self.pd_url}/name-service/v2/players", method="PUT", json=[self.puuid])[0]
+        content = self.session.fetch(f"{self.session.pd_url}/name-service/v2/players", method="PUT", json=[self.puuid])[0]
 
         self.game_name = content["GameName"]
         self.game_tag = content["TagLine"]
@@ -124,7 +116,7 @@ class User:
         dict: A dictionary object containing the ranked data of the user
         """
 
-        return self.session.fetch(f"{self.pd_url}/mmr/v1/players/{self.puuid}")
+        return self.session.fetch(f"{self.session.pd_url}/mmr/v1/players/{self.puuid}")
 
     # TEMP
     def get_ranked_data(self):
@@ -182,7 +174,7 @@ class User:
 
         queue_url_parameter = f"&queue={queue_ID}" if queue_ID is not None else ""
 
-        return self.session.fetch(f"{self.pd_url}/match-history/v1/history/{self.puuid}?startIndex={start}&endIndex={end}{queue_url_parameter}", use_cache=use_cache)
+        return self.session.fetch(f"{self.session.pd_url}/match-history/v1/history/{self.puuid}?startIndex={start}&endIndex={end}{queue_url_parameter}", use_cache=use_cache)
 
     def get_match_history(self, start: int = 0, end: int = 20, queue_ID: Optional[str] = None, use_cache: bool = False) -> List["PreviousMatch"]:
         """

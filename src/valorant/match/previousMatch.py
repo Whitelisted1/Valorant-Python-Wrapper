@@ -21,4 +21,4 @@ class PreviousMatch(Match):
         dict: The JSON data which represents this Match's data
         """
 
-        return self.session.fetch(f"{self.pd_url}/match-details/v1/matches/{self.match_ID}")
+        return self.session.fetch(f"{self.session.pd_url}/match-details/v1/matches/{self.match_ID}")

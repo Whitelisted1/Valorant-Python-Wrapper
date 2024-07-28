@@ -67,13 +67,13 @@ class LocalAccount(User):
         Optional[dict]: A dictionary or None object that contains data relating to the current game
         """
 
-        content = self.session.fetch(f"{self.glz_url}/core-game/v1/players/{self.puuid}", use_cache=False)
+        content = self.session.fetch(f"{self.session.glz_url}/core-game/v1/players/{self.puuid}", use_cache=False)
 
         if "httpStatus" in content and content["httpStatus"] == 404:
             return None
 
         matchID = content["MatchID"]
-        return self.session.fetch(f"{self.glz_url}/core-game/v1/matches/{matchID}", use_cache=False)
+        return self.session.fetch(f"{self.session.glz_url}/core-game/v1/matches/{matchID}", use_cache=False)
 
     def get_current_game(self) -> Optional["Match"]:
         """
@@ -99,13 +99,13 @@ class LocalAccount(User):
         Optional[dict]: A dictionary or None object that contains data relating to the current pregame
         """
 
-        content = self.session.fetch(f"{self.glz_url}/pregame/v1/players/{self.puuid}", use_cache=False)
+        content = self.session.fetch(f"{self.session.glz_url}/pregame/v1/players/{self.puuid}", use_cache=False)
 
         if "httpStatus" in content and content["httpStatus"] == 404:
             return None
 
         matchID = content["MatchID"]
-        return self.session.fetch(f"{self.glz_url}/pregame/v1/matches/{matchID}", use_cache=False)
+        return self.session.fetch(f"{self.session.glz_url}/pregame/v1/matches/{matchID}", use_cache=False)
 
     def get_current_pregame(self) -> "Pregame":
         """
@@ -131,4 +131,4 @@ class LocalAccount(User):
         Optional[dict]: The matchmaking penalties
         """
 
-        return self.session.fetch(f"{self.pd_url}/restrictions/v3/penalties", use_cache=False)["Penalties"]
+        return self.session.fetch(f"{self.session.pd_url}/restrictions/v3/penalties", use_cache=False)["Penalties"]

@@ -8,18 +8,12 @@ if TYPE_CHECKING:
 
 
 class Match:
-    def __init__(self, session: "Session", match_ID: str, map_ID: Optional[str] = None, mode_ID: Optional[str] = None, players: Optional["Players"] = None, shard: str = "na", region: str = "na"):
+    def __init__(self, session: "Session", match_ID: str, map_ID: Optional[str] = None, mode_ID: Optional[str] = None, players: Optional["Players"] = None):
         self.session = session
 
         self.match_ID = match_ID
         self.map = map_ID
         self.mode = mode_ID
-
-        self.pd_url = f"https://pd.{shard}.a.pvp.net"
-        self.glz_url = f"https://glz-{shard}-1.{region}.a.pvp.net"
-
-        self.shard = shard
-        self.region = region
 
         if players is None: self.players = Players(session)
         else: self.players: Players = players
@@ -32,7 +26,7 @@ class Match:
         if self.session.shard is None:
             self.session.get_region()
 
-        self.session.fetch(f"https://glz-{self.session.region}-1.{self.session.shard}.a.pvp.net/core-game/v1/players/{self.session.get_local_account().puuid}/disassociate/{self.match_ID}", method="POST")
+        self.session.fetch(f"{self.session.glz_url}/core-game/v1/players/{self.session.get_local_account().puuid}/disassociate/{self.match_ID}", method="POST")
 
     @staticmethod
     def from_json(session: "Session", data: dict) -> "Match":

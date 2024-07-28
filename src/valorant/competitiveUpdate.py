@@ -20,7 +20,6 @@ class CompetitiveUpdate:
 
     @staticmethod
     def from_json(data: dict) -> "CompetitiveUpdate":
-            # from .rank import Rank
         return CompetitiveUpdate(
             data["MatchStartTime"],
             Rank(data["TierBeforeUpdate"], data["RankedRatingBeforeUpdate"]),
