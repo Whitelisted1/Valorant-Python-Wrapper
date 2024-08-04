@@ -74,6 +74,9 @@ class User:
 
         data = self.get_competitive_updates_raw(end=1, use_cache=use_cache)
 
+        if len(data["Matches"]) == 0:
+            return Rank(0, None)
+
         return Rank(data["Matches"][0]["TierAfterUpdate"], data["Matches"][0]["RankedRatingAfterUpdate"])
 
     def get_peak_rank(self) -> Rank:
@@ -88,7 +91,7 @@ class User:
             return self.peak_rank
 
         data: dict = self.get_ranked_data()["QueueSkills"]["competitive"]["SeasonalInfoBySeasonID"]
-        rank = Rank(0, 0)
+        rank = Rank(0, None)
 
         if data is None:
             self.peak_rank = rank
@@ -135,7 +138,7 @@ class User:
         dict: A dictionary object containing the competitive updates of the user
         """
 
-        return self.session.fetch(f"https://pd.{self.shard}.a.pvp.net/mmr/v1/players/{self.puuid}/competitiveupdates?startIndex={start}&endIndex={end}&queue=competitive", use_cache=use_cache)
+        return self.session.fetch(f"{self.session.pd_url}/mmr/v1/players/{self.puuid}/competitiveupdates?startIndex={start}&endIndex={end}&queue=competitive", use_cache=use_cache)
 
     def get_competitive_updates(self, start: int = 0, end: int = 20, use_cache: bool = False) -> List[CompetitiveUpdate]:
         """
