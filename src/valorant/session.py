@@ -104,7 +104,7 @@ class Session:
         data = r.json()
 
         if method.upper() == "POST":
-            return
+            return data
 
         if "errorCode" in data and data["errorCode"] == "BAD_CLAIMS":
             self.auth.lockfile_contents = None

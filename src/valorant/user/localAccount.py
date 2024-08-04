@@ -5,6 +5,7 @@ from .user import User
 from .friend import Friend, Friends
 from .users import Users
 from ..rank import Rank
+from ..party import Party
 
 if TYPE_CHECKING:
     from ..session import Session
@@ -132,3 +133,14 @@ class LocalAccount(User):
         """
 
         return self.session.fetch(f"{self.session.pd_url}/restrictions/v3/penalties", use_cache=False)["Penalties"]
+
+    def get_party_raw(self) -> dict:
+        return self.session.fetch(f"{self.session.glz_url}/parties/v1/players/{self.puuid}", use_cache=False)
+
+    def get_party(self) -> Party:
+        party_information_raw = self.get_party_raw()
+
+        if "httpStatus" in party_information_raw and party_information_raw["httpStatus"] == 404:
+            return None
+
+        return Party(self.session, party_information_raw["CurrentPartyID"])
