@@ -101,6 +101,13 @@ class Session:
 
         # send the request
         r = requests.request(method, url, headers=self.auth.get_auth_headers(), *args, **kwargs)
+
+        if r.status_code == 429:
+            m = "Too many requests."
+            if 'Retry-After' in r.headers: m += f" Retry in {r.headers['Retry-After']} seconds."
+
+            raise RuntimeError(m)
+
         data = r.json()
 
         if method.upper() == "POST":
