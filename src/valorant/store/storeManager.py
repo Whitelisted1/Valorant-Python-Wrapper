@@ -31,7 +31,7 @@ class StoreManager:
         if self.session.shard is None:
             self.session.get_region()
 
-        return self.session.fetch(f"{self.session.pd_url}/{self.session.get_local_account().puuid}")
+        return self.session.fetch(f"{self.session.pd_url}/store/v2/storefront/{self.session.get_local_account().puuid}")
 
     def get_storefront(self) -> StoreFront:
         """
