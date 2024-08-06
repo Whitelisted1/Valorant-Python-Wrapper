@@ -44,7 +44,7 @@ class Conversation:
             if local_puuid == participant["puuid"] and not include_self:
                 continue
 
-            participants.append(User(self.session, participant["puuid"], game_name=participant["game_name"], game_tag=participant["game_tag"], region=participant["region"]))
+            participants.append(User(self.session, participant["puuid"], game_name=participant["game_name"], game_tag=participant["game_tag"]))
 
         return participants
 
