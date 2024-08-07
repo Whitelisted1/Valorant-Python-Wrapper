@@ -16,7 +16,7 @@ pip install valorant-wrapper
 ## Usage
 Documentation is coming soon, but here is a quickstart guide for those getting started:
 ```python
-from valorant.session import Session
+from valorant import Session
 
 # Before beginning, make sure that the Riot Client is open
 # This will not work otherwise
