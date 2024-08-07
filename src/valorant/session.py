@@ -78,7 +78,7 @@ class Session:
         # return the JSON data
         return data
 
-    def fetch(self, url: str, method: str = "GET", use_cache: bool = True, set_cache_time_seconds: Optional[int] = None, *args, **kwargs) -> Optional[dict]:
+    def fetch(self, url: str, method: str = "GET", use_cache: bool = True, use_auth_headers: bool = True, set_cache_time_seconds: Optional[int] = None, *args, **kwargs) -> Optional[dict]:
         """
         Fetches the given url using the given method
 
@@ -86,6 +86,7 @@ class Session:
         url (str): The url to the data that will be requested
         method (str, defaults to "GET"): The method the request will be sent with
         use_cache (bool, defaults to True): Determines if this request will use the CacheManager
+        use_auth_headers (bool, defaults to True): Determines if this request should use standard Valorant authentication headers
         set_cache_time_seconds (int, optional, defaults to None): The amount of time a request's response will be stored in the cache for
 
         Returns:
@@ -100,7 +101,7 @@ class Session:
                 return response
 
         # send the request
-        r = requests.request(method, url, headers=self.auth.get_auth_headers(), *args, **kwargs)
+        r = requests.request(method, url, headers=(self.auth.get_auth_headers() if use_auth_headers else None), *args, **kwargs)
 
         if r.status_code == 429:
             m = "Too many requests."
