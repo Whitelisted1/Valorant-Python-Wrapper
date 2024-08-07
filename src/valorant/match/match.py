@@ -34,7 +34,7 @@ class Match:
 
         players = Players(session)
         for player in data["Players"]:
-            players.users.append(Player(
+            p = Player(
                 session,
                 player["Subject"],
                 agent=player["CharacterID"],
@@ -42,7 +42,12 @@ class Match:
                 account_level=player["PlayerIdentity"]["AccountLevel"],
                 hide_account_level=player["PlayerIdentity"]["HideAccountLevel"],
                 incognito=player["PlayerIdentity"]["Incognito"]
-            ))
+            )
+
+            if p.hide_account_level:
+                p.account_level = None
+
+            players.users.append(p)
 
         players.get_names()
 

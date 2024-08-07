@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class User:
-    def __init__(self, session: "Session", puuid: str, game_name: Optional[str] = None, game_tag: Optional[str] = None, incognito: bool = False, rank: Optional[Rank] = None, peak_rank: Optional[Rank] = None, account_level: int = 0, hide_account_level: bool = False):
+    def __init__(self, session: "Session", puuid: str, game_name: Optional[str] = None, game_tag: Optional[str] = None, incognito: bool = False, rank: Optional[Rank] = None, peak_rank: Optional[Rank] = None, account_level: Optional[int] = None, hide_account_level: bool = False):
         """
         An object that represents an individual User
 
@@ -23,7 +23,7 @@ class User:
         incognito (bool, defaults to False): Represents if the current user is in incognito mode
         rank (Rank, optional, defaults to None): The rank of the user
         peak_rank (Rank, optional, defaults to None): The peak rank of the user
-        account_level (int, defaults to 0): The account level of the user
+        account_level (int, optional, defaults to None): The account level of the user
         hide_account_level (bool, defaults to False): Represents if we should hide the account level of the user
         """
 
@@ -37,8 +37,18 @@ class User:
         self.rank: Optional[Rank] = rank
         self.peak_rank: Optional[Rank] = peak_rank
 
-        self.account_level: int = account_level
+        self.account_level: Optional[int] = account_level
         self.hide_account_level: bool = hide_account_level
+
+    def get_incognito_name(self) -> str:
+        """
+        Fetches the incognito name of a user. The main purpose of this function is to be changed in subclasses
+
+        Returns:
+        str: The incognito name of the user
+        """
+
+        return "Player"
 
     def get_name(self) -> str:
         """
@@ -47,6 +57,9 @@ class User:
         Returns:
         str: The display name of the player
         """
+
+        if self.incognito:
+            return self.get_incognito_name()
 
         if not (self.game_name is None or self.game_tag is None):
             return self.game_name + "#" + self.game_tag

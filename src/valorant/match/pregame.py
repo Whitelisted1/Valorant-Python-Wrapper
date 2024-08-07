@@ -26,7 +26,7 @@ class Pregame(Match):
         for player in data["AllyTeam"]["Players"]:
             agent = player["CharacterID"] if player["CharacterID"] != "" else None
 
-            players.users.append(Player(
+            p = Player(
                 session,
                 player["Subject"],
                 agent=agent,
@@ -34,7 +34,12 @@ class Pregame(Match):
                 account_level=player["PlayerIdentity"]["AccountLevel"],
                 hide_account_level=player["PlayerIdentity"]["HideAccountLevel"],
                 incognito=player["PlayerIdentity"]["Incognito"]
-            ))
+            )
+
+            if p.hide_account_level:
+                p.account_level = None
+
+            players.users.append(p)
 
         players.get_names()
 
