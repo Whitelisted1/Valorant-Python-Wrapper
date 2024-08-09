@@ -14,45 +14,13 @@ pip install valorant-wrapper
 ```
 
 ## Usage
-Documentation is coming soon, but here is a quickstart guide for those getting started:
-```python
-from valorant import Session
 
-# Before beginning, make sure that the Riot Client is open
-# This will not work otherwise
+See the [Quickstart Page](https://github.com/Whitelisted1/Valorant-Python-Wrapper/wiki/Quickstart)
 
-session = Session() # get session
-local_account = session.get_local_account() # get the local account
-rank = local_account.get_rank() # get our local account's rank
-
-# print the name of the local account and its rank
-print("[Rank]", local_account.get_name(), rank.to_string())
-
-# get the local account's friends, then print all their names
-friends = local_account.get_friends()
-print("[Friends]", friends.get_names())
-
-# get the active match (does not include pregame), and print all player names
-current_game = local_account.get_current_game()
-
-# check to see if the player is in a game
-if current_game is None: print("[Game] Not in a game")
-else: print("[Game]", current_game.players.get_names())
-
-# get the current party and print the raw information (not yet complete)
-party = local_account.get_party()
-
-# check to see if the player is in a party
-if party is None: print("[Party] Not in a party")
-else: print("[Party]", party.get_information_raw())
-
-# get the storefront and print the first item's cost
-storefront = session.store.get_storefront()
-print("[Store]", storefront.daily_shop[0].cost)
-```
+Want to do something specific? See the ["How to" Page](https://github.com/Whitelisted1/Valorant-Python-Wrapper/wiki/How-do-I-_%3F)
 
 ## Resources used
-* https://github.com/techchrism/valorant-api-docs
+* https://github.com/techchrism/valorant-api-docs for the amazing documentation work of Riot's internal APIs
 * https://github.com/zayKenyon/VALORANT-rank-yoinker as a reference
 
 ## Legal
