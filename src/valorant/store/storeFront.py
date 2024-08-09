@@ -96,7 +96,7 @@ class UpgradeCurrencyOffer(SkinOffer):
 
 
 class BundleItem:
-    def __init__(self, session: "Session", item_ID: str, item_type: str, quantity: int, base_price: int, currency_ID: str, is_promo_item: bool):
+    def __init__(self, session: "Session", item_ID: str, item_type: str, quantity: int, base_cost: int, currency_ID: str, is_promo_item: bool):
         """
         An object that represents an item that is part of a bundle
 
@@ -105,7 +105,7 @@ class BundleItem:
         item_ID (str): The ID of the item that is part of the bundle
         item_type (str): The type of item that is part of the bundle
         quantity (int): The number of this type of item that will be included in the bundle
-        base_price (int): The base price of the item if you were to buy it separately from the bundle
+        base_cost (int): The base cost of the item if you were to buy it separately from the bundle
         currency_ID (str): The ID of the currency used to buy the bundle item
         is_promo_item (bool): Shows if this item is a promotional item
         """
@@ -116,7 +116,7 @@ class BundleItem:
         self.item_type = item_type
 
         self.amount = quantity
-        self.base_price = base_price
+        self.base_cost = base_cost
         self.currency_ID = currency_ID
 
         self.is_promo_item = is_promo_item
@@ -135,7 +135,7 @@ class BundleItem:
 
 
 class BundleOffer:
-    def __init__(self, session: "Session", bundle_ID: str, currency_ID: str, expires_time: int, items: List[BundleItem], bundle_price: int, bundle_savings: int):
+    def __init__(self, session: "Session", bundle_ID: str, currency_ID: str, expires_time: int, items: List[BundleItem], bundle_cost: int, bundle_savings: int):
         """
         An object that represents a bundle offer
 
@@ -145,14 +145,14 @@ class BundleOffer:
         currency_ID (str): The ID of the currency used to buy the bundle
         expires_time (int): The time that this bundle expires at
         items (List[BundleItem]): The items that are included in the bundle in the form of the BundleItem object
-        bundle_price (int): The price of the bundle (in the currency provided in currency_ID)
+        bundle_cost (int): The cost of the bundle (in the currency provided in currency_ID)
         bundle_savings (int): Shows how much is the player saving by buying the bundle instead of all the items individually
         """
 
         self.session = session
         self.bundle_ID = bundle_ID
 
-        self.bundle_price = bundle_price
+        self.bundle_cost = bundle_cost
         self.bundle_savings = bundle_savings
         self.buy_currency_ID = currency_ID
 
