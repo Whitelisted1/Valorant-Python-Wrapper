@@ -17,7 +17,7 @@ pip install valorant-wrapper
 
 See the [Quickstart Page](https://github.com/Whitelisted1/Valorant-Python-Wrapper/wiki/Quickstart)
 
-Want to do something specific? See the ["How to" Page](https://github.com/Whitelisted1/Valorant-Python-Wrapper/wiki/How-do-I-_%3F)
+Want to do something specific? See the ["How to" Page](https://github.com/Whitelisted1/Valorant-Python-Wrapper/wiki/How-to)
 
 ## Resources used
 * https://github.com/techchrism/valorant-api-docs for the amazing documentation work of Riot's internal APIs
